@@ -1,0 +1,11 @@
+DESCRIPTION generated from fixtures/invoices.csv
+
+SCHEMA >
+    `id` UInt32,
+    `agent_id` UInt8,
+    `recipient_code` UInt32,
+    `client_id` UInt32,
+    `amount` Float32,
+    `currency` LowCardinality(String),
+    `created_at` DateTime,
+    `added_payments` String

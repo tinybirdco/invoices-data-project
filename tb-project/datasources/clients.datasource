@@ -1,0 +1,6 @@
+DESCRIPTION generated from fixtures/clients.csv
+
+SCHEMA >
+    `company_country` String,
+    `company_name` String,
+    `id` UInt32

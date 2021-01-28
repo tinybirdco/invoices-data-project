@@ -1,0 +1,11 @@
+DESCRIPTION table generated for currency conversion
+
+SCHEMA >
+    `date` DateTime,
+    `currency` LowCardinality(String),
+    `rate` Float32
+
+ENGINE "Join"
+ENGINE_JOIN_STRICTNESS "ANY"
+ENGINE_JOIN_TYPE "LEFT"
+ENGINE_KEY_COLUMNS "currency"

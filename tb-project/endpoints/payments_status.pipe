@@ -1,0 +1,118 @@
+TOKEN "read API endpoints" READ
+
+VERSION 1
+
+DESCRIPTION >
+	Provides the evolution of payments. It can be used to check the global payment status as well as 
+    to check the payment evolution for an specific client or recipient. 
+
+    Data is aggregated by day or month based on chosen date range, more than 6 monts (180 days) by month otherwise by day.
+
+NODE current
+SQL >
+%
+    WITH {{
+      Date(start_date,
+       '2021-01-01',
+       required=True,
+       description="Start date for filtering (YYYY-MM-DD)")
+    }},
+    {{
+        Date(end_date,
+       '2021-01-20',
+       required=True,
+       description="End date for filtering (YYYY-MM-DD)")
+    }},
+    {{
+      String(client_id,
+       '',
+       required=False,
+       description="(Optional) The client_id to filter")
+    }},
+    {{
+      String(recipient_id,
+       '',
+       required=False,
+       description="(Optional) The recipient_id to filter")
+    }},
+    {{
+        Array(group_by,
+       'String',
+       '',
+       required=False,
+       description="(Optional) Comma separated list with the name(s) of the column(s) to group by the result (e.g. type).",
+       example="type",
+       enum=['type'])
+    }}
+
+    {% if not defined(start_date) or not defined(end_date) %}
+        {{ error("start_date and end_date are mandatories") }}
+    {% end %}
+
+    SELECT 
+        {% set _days_interval = day_diff(Date(start_date, '2021-01-01'), Date(end_date, '2021-01-31')) %}
+        {% if _days_interval > 180 %}
+            toStartOfMonth(day)
+        {% else %}
+            toDate(day)
+        {% end %} payment_range,
+        round(sumIf(amount, day > now()),4) pending,
+        round(sumIf(amount, day <= now()),4) payed
+        {% if defined(group_by) %}
+            ,{{columns(group_by, '')}}
+        {% end %}
+    from invoices_mv_payments
+    where day BETWEEN toDate({{Date(start_date, '2021-01-01')}}) 
+            AND toDate({{Date(end_date, '2021-01-31')}})
+            {% if defined(client_id) %} AND client_id = {{client_id}} {% end %}  
+            {% if defined(recipient_id) %} AND recipient_id = {{recipient_id}} {% end %}  
+    group by payment_range
+    {% if defined(group_by) %}
+        ,{{columns(group_by, '')}}
+    {% end %}
+    ORDER BY payment_range ASC
+
+NODE comparable
+SQL >
+    %
+    SELECT 
+        {% set _days_interval = day_diff(Date(start_date, '2021-01-01'), Date(end_date, '2021-01-31')) %}
+        {% if _days_interval > 180 %}
+            toStartOfMonth(day + 364)
+        {% else %}
+            toDate(day) + 364
+        {% end %} payment_range,
+        round(sumIf(amount, payment_range > now()),4) pending,
+        round(sumIf(amount, payment_range <= now()),4) payed
+        {% if defined(group_by) %}
+            ,{{columns(group_by, '')}}
+        {% end %}
+    from invoices_mv_payments
+    where day BETWEEN toDate({{Date(start_date, '2021-01-01')}})  - 364
+            AND toDate({{Date(end_date, '2021-01-31')}}) - 364
+            {% if defined(client_id) %} AND client_id = {{client_id}} {% end %}  
+            {% if defined(recipient_id) %} AND recipient_id = {{recipient_id}} {% end %}  
+    group by payment_range
+    {% if defined(group_by) %}
+        ,{{columns(group_by, '')}}
+    {% end %}
+    ORDER BY payment_range ASC
+
+NODE payment_evolution
+SQL >
+    %
+    select
+        {% if defined(group_by) %}
+            {{columns(group_by, '')}},
+        {% end %}
+        payment_range,
+        pending,
+        payed,
+        cmp.pending as pending_comp,
+        cmp.payed as payed_comp
+    from current as c
+    left outer join comparable as cmp
+    using payment_range
+        {% if defined(group_by) %}
+            ,{{columns(group_by, '')}}
+        {% end %}

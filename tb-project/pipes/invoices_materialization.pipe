@@ -1,0 +1,14 @@
+NODE invoices_materialize_node
+SQL >
+    SELECT 
+        agent_id,
+        recipient_code as recipient_id,
+        client_id,
+        round(amount * joinGet('currency', 'rate', i.currency),2) amount,
+        currency,
+        created_at,
+        added_payments
+    from invoices i
+
+TYPE materialized
+DATASOURCE invoices_mv

@@ -1,0 +1,12 @@
+DESCRIPTION payment data generated from invoices data
+
+SCHEMA >
+    `day` Date,
+    `amount` SimpleAggregateFunction(sum, Float64),
+    `type` LowCardinality(String),
+    `client_id` UInt32,
+    `recipient_id` UInt32
+    
+ENGINE "AggregatingMergeTree"
+ENGINE_PARTITION_KEY "toYYYYMM(day)"
+ENGINE_SORTING_KEY "day, type, client_id, recipient_id"

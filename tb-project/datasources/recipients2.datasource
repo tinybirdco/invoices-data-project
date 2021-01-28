@@ -1,0 +1,11 @@
+DESCRIPTION generated from fixtures/recipients.csv
+
+SCHEMA >
+    `recipient_country` String,
+    `recipient_code` String,
+    `id` UInt32
+
+ENGINE "Join"
+ENGINE_JOIN_STRICTNESS "ANY"
+ENGINE_JOIN_TYPE "INNER"
+ENGINE_KEY_COLUMNS "id"

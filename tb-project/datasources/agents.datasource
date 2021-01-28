@@ -1,0 +1,10 @@
+DESCRIPTION generated from agents.csv
+
+SCHEMA >
+    `agent_name` String,
+    `id` UInt8
+
+ENGINE "Join"
+ENGINE_JOIN_STRICTNESS "ANY"
+ENGINE_JOIN_TYPE "LEFT"
+ENGINE_KEY_COLUMNS "id"

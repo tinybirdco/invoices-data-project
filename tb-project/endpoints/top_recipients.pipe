@@ -1,0 +1,25 @@
+TOKEN "read API endpoints" READ
+
+DESCRIPTION >
+	Provides the top 10 rank for recipients. This endpoint provides information about the recipients which 
+    more money invest using our platform.
+
+NODE top_recipients
+SQL >
+    %
+    WITH {{
+      Array(country,
+       'String',
+       '',
+       required=False,
+       description="(Optional) Comma separated list of the countries in ISO 3166-1 alpha-3 format (e.g. LTU,ESP)")
+    }}
+    select
+        joinGet('recipients', 'recipient_code', invoices.recipient_id) recipient_code,
+        sum(amount) total,
+        joinGet('recipients', 'recipient_country', invoices.recipient_id) country
+    from invoices_mv invoices
+    {% if defined(country) %} WHERE country IN {{Array(country, 'String')}} {% end %}  
+    group by recipient_id
+    order by total desc
+

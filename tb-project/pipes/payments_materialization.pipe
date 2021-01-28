@@ -1,0 +1,35 @@
+NODE invoices_materialize_payments
+SQL >
+    
+    SELECT 
+        toDate(payment_date) as day, 
+        sum(amount) as amount, 
+        type,
+        client_id,
+        recipient_code as recipient_id
+    FROM 
+    (
+        SELECT 
+            dates AS payment_date, 
+            *
+        FROM 
+        (
+            WITH JSONExtractArrayRaw(replaceAll(added_payments, '''', '"')) AS payments            
+            SELECT 
+                arrayMap(x -> parseDateTimeBestEffort(JSONExtractString(x, 'added_at')), payments) AS dates, 
+                arrayMap(x -> JSONExtractString(x, 'payment_id'), payments) AS payment_ids, 
+                arrayMap(x -> JSONExtractString(x, 'type'), payments) AS type, 
+                amount * joinGet('currency', 'rate', currency) amount,
+                *
+            FROM invoices 
+        ) 
+        ARRAY JOIN 
+            dates, 
+            type
+    ) 
+    GROUP BY day, type, client_id, recipient_id
+
+TYPE materialized
+DATASOURCE invoices_mv_payments
+
+
