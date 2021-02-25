@@ -5,7 +5,7 @@ DESCRIPTION >
     those who move more money with the system.
 
 
-NODE top_clients
+NODE top_clients_node
 SQL >
     %
     WITH {{

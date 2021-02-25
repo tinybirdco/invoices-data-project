@@ -25,7 +25,7 @@ SQL >
     FROM 
     (
         SELECT 
-            joinGet(dataflow__agents, 'agent_name', invoices.agent_id) agent,
+            joinGet(agents, 'agent_name', invoices.agent_id) agent,
             round(sum(amount), 2) AS total
         FROM invoices_mv invoices
         GROUP BY agent_id
