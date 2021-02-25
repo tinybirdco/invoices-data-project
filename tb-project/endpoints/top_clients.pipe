@@ -38,4 +38,5 @@ SQL >
     from clients c
     join top_clients tc
     on c.id == tc.client_id
+    ORDER BY total desc
 

@@ -4,7 +4,7 @@ DESCRIPTION >
 	Provides the top 10 rank for recipients. This endpoint provides information about the recipients which 
     more money invest using our platform.
 
-NODE top_recipients
+NODE top_recipients_node
 SQL >
     %
     WITH {{
