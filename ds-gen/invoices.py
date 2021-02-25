@@ -2,10 +2,11 @@
 
 from faker import Faker
 from faker.providers import bank, misc
-from random import randint, seed, random, choice
-from datetime import datetime, timedelta
+from random import randint, seed, random, choice, choices
 import numpy as np
+import pandas as pd
 from typing import NamedTuple
+from datetime import datetime, timedelta
 
 
 class InvoiceConfig(NamedTuple):
@@ -20,11 +21,21 @@ class InvoiceConfig(NamedTuple):
     max_invoices: int
 
 
-def gen_datetime_invoice(config):
+def gen_datetime_invoice(config, df_gtrends_1_day, df_gtrends):
     # generate a datetime in format yyyy-mm-dd hh:mm:ss.000000
-    end = datetime.now()
-    start = end - timedelta(config.days_invoice_date_range)
-    return start + (end - start) * random()
+    time = choices(df_gtrends_1_day['time_utc'].values,
+                                        weights=df_gtrends_1_day['amazon: (United States)'].values,
+                                        k=1)
+    date = choices(df_gtrends['date'].values,
+                                        weights=df_gtrends['amazon'].values,
+                                        k=1)
+    d = pd.to_datetime(str(date[0]))
+    # date = d.strftime('%Y-%m-%d') + ' ' + time[0].strftime('%H:%M:%S')
+    return d.combine(d, time[0])
+
+    # end = datetime.now()
+    # start = end - timedelta(config.days_invoice_date_range)
+    # return start + (end - start) * random()
 
 
 def gen_datetime_payment(invoice_date, config):
@@ -58,8 +69,8 @@ def gen_payments(config, invoice_id, invoice_date, fake, num_payments_arr):
     return payments
 
 
-def gen_invoice(config, i, fake, num_payments_arr, amount):
-    invoice_date = gen_datetime_invoice(config)
+def gen_invoice(config, i, fake, num_payments_arr, amount, df_gtrends_1_day, df_gtrends, invoice_date):
+    # invoice_date = gen_datetime_invoice(config, df_gtrends_1_day, df_gtrends)
     return {
         "id": i+1,
         "agent_id": randint(1, 25),

@@ -1,7 +1,6 @@
 Faker==5.5.0
 numpy==1.19.5
 pandas==1.2.0
-pkg-resources==0.0.0
 pydbgen==1.0.5
 python-dateutil==2.8.1
 pytz==2020.5
