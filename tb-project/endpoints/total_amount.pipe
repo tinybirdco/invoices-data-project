@@ -1,6 +1,6 @@
 TOKEN "read API endpoints" READ
 
-NODE total_amoun_note
+NODE total_amount_node
 SQL >
     SELECT round(sum(amount), 2) round from invoices_mv_payments
 
