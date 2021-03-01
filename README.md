@@ -53,10 +53,11 @@ tb push --push-deps
 There's a BigQuery connector integrated in the CLI. To start using it run:
 
 ```bash
+export GOOGLE_APPLICATION_CREDENTIALS=absolute_path_to_your_json_service_account
 tb auth --connector bigquery
 ```
 
-You'll be prompted by the name of your BigQuery project, the absolute path for a JSON service account with permissions to read/write from BigQuery and Storage, the name of a Storage bucket to store temporary files.
+You'll be prompted to introduce the name of your BigQuery project and the name of a Storage bucket to store temporary files.
 
 It supports several ingestion scenarios:
 
@@ -114,6 +115,8 @@ tb datasource replace invoices \
 ```
 
 ## Streaming with Google DataFlow
+
+Now we'll publish some invoices from Google PubSub and deploy a DataFlow pipeline which will ingest those events into the `invoices` data source in Tinybird. You can check how your endpoints get updated as data comes in.
 
 Create the Python environment:
 
