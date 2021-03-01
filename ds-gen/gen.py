@@ -146,17 +146,17 @@ if __name__ == '__main__':
     fake.add_provider(misc)
     fake.add_provider(profile)
 
-    # print("Generating agents ...", NUM_AGENTS)
-    # gen_agents(fake)
-    # print("Done!")
+    print("Generating agents ...", NUM_AGENTS)
+    gen_agents(fake)
+    print("Done!")
 
-    # print("Generating clients ...", NUM_CLIENTS)
-    # gen_clients(fake)
-    # print("Done!")
+    print("Generating clients ...", NUM_CLIENTS)
+    gen_clients(fake)
+    print("Done!")
 
-    # print("Generating recipients ...", NUM_RECIPIENTS)
-    # gen_recipients(fake)
-    # print("Done!")
+    print("Generating recipients ...", NUM_RECIPIENTS)
+    gen_recipients(fake)
+    print("Done!")
 
     print("Generating invoices ... ", NUM_INVOICES)
     gen_invoices(fake)
