@@ -1,9 +1,10 @@
 # Synthetic Data Generator for invoices
 
-With this script you will be able to generate a synthetic dataset for the Firewire PoC. It generates three files in the output directory: 
-- clients.json
-- recipients.json
-- invoices.json
+With this script you will be able to generate a synthetic dataset for the invoices data project. It generates these files in the output directory: 
+- clients-synthetic-data.json
+- recipients-synthetic-data.json
+- invoices-synthetic-data.json
+- agents-synthetic-data.json
 
 To run the script and generate the source dataset:
 
