@@ -19,6 +19,13 @@ pip install -r requirements.txt
 python3 gen.py
 ```
 
+With this script you will be able to generate a synthetic dataset for the invoices data project. It generates these files in the `output` directory: 
+
+- clients-synthetic-data.json
+- recipients-synthetic-data.json
+- invoices-synthetic-data.json
+- agents-synthetic-data.json
+
 ## Upload data to BigQuery
 
 You can just upload manually the generated JSON files in the previous step from [the BigQuery console](https://console.cloud.google.com/bigquery):
@@ -28,6 +35,8 @@ Create a dataset called `tinybird` and upload the JSON files using these table n
 ![](img/bq-tables.png)
 
 ## Upload the data project to Tinybird
+
+Check the [CLI documentation](https://docs.tinybird.co/cli.html) for other installation options and troubleshooting.
 
 ```bash
 cd tb-project
